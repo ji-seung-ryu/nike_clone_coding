@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>5mok</title>
+    </head>
+    <body>
+        <style>
+            #border {
+                position: relative;
+                border: 2px green solid;
+                height: 800px;
+                width: 800px;
+                background: brown;
+            }
+
+            #vertical_container {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                border: 1px solid black;
+                justify-content: space-evenly;
+            }
+
+            #horizontal_container {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                border: 1px solid black;
+                justify-content: space-evenly;
+            }
+
+            .vertical {
+                position: relative;
+                height: 100%;
+                width: 0;
+                border: 1px solid black;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+            }
+
+            .horizontal {
+                height: 0;
+                width: 100%;
+                border: 1px solid black;
+            }
+
+            .point,
+            .checked {
+                position: absolute;
+
+                height: 40px;
+                width: 40px;
+
+                border-radius: 100%;
+                z-index: 1;
+            }
+
+            .point:hover {
+                background: yellow;
+            }
+        </style>
+
+        <div id="border">
+            <div id="vertical_container"></div>
+            <div id="horizontal_container"></div>
+        </div>
+
+        <script>
+            let border = document.getElementById('border');
+            let vertical_container = document.getElementById('vertical_container');
+            let horizontal_container = document.getElementById('horizontal_container');
+
+            for (var i = 0; i < 19; i++) {
+                let vertical = document.createElement('div');
+                vertical.className = 'vertical';
+                vertical_container.appendChild(vertical);
+                for (var j = 0; j < 19; j++) {
+                    let point = document.createElement('div');
+                    point.className = 'point';
+                    point.setAttribute('name', String(i + 1) + ' ' + String(j + 1));
+                    vertical.appendChild(point);
+
+                    var cur_top = 40 * (j + 1) - 20;
+
+                    point.style.top = String(cur_top) + 'px';
+                    point.style.left = '-20px';
+                }
+            }
+
+            for (var i = 0; i < 19; i++) {
+                let horizontal = document.createElement('div');
+                horizontal.className = 'horizontal';
+                horizontal_container.appendChild(horizontal);
+            }
+
+            var turn = 1;
+            //if turn 1 , black
+            //if turn 2 , white
+            var occupy = new Array(20);
+
+            for (var i = 0; i < occupy.length; i++) {
+                occupy[i] = new Array(20);
+            }
+
+            let point = document.getElementsByClassName('point');
+            for (var i = 0; i < point.length; i++) {
+                point[i].addEventListener('click', function () {
+                    var pos = this.getAttribute('name').split(' ');
+                    var y = parseInt(pos[0]),
+                        x = parseInt(pos[1]);
+                    this.setAttribute('class', 'checked');
+
+                    if (turn == 1) {
+                        this.style.background = 'black';
+                    } else {
+                        this.style.background = 'white';
+                    }
+						
+				
+                    occupy[x][y] = turn;
+                    if (right_top_cnt(x, y, turn) + left_bot_cnt(x, y, turn) - 1 >= 5) gameover(turn);
+                    if (right_bot_cnt(x, y, turn) + left_top_cnt(x, y, turn) - 1 >= 5) gameover(turn);
+                    if (right_cnt(x, y, turn) + left_cnt(x, y, turn) - 1 >= 5) gameover(turn);
+                    if (top_cnt(x, y, turn) + bot_cnt(x, y, turn) - 1 >= 5) gameover(turn);
+
+                    turn %= 2;
+                    turn++;
+                });
+            }
+
+            function right_top_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + right_top_cnt(x - 1, y + 1, color);
+            }
+
+            function right_bot_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + right_bot_cnt(x + 1, y + 1, color);
+            }
+
+            function left_bot_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + left_bot_cnt(x + 1, y - 1, color);
+            }
+
+            function left_top_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + left_top_cnt(x - 1, y - 1, color);
+            }
+
+            function right_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + right_cnt(x, y + 1, color);
+            }
+
+            function left_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + left_cnt(x, y - 1, color);
+            }
+
+            function top_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + right_cnt(x - 1, y, color);
+            }
+
+            function bot_cnt(x, y, color) {
+                if (x < 1 || y < 1 || x > 19 || y > 19) return 0;
+                if (color != occupy[x][y]) return 0;
+                return 1 + right_cnt(x + 1, y, color);
+            }
+
+            function gameover(win) {
+				if (win == 1) alert('black win!');
+				else alert('white win!');
+               
+            }
+        </script>
+    </body>
+</html>
