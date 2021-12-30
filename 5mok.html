@@ -116,6 +116,8 @@
                     var pos = this.getAttribute('name').split(' ');
                     var y = parseInt(pos[0]),
                         x = parseInt(pos[1]);
+					if (this.getAttribute('class') == 'checked') return;
+					
                     this.setAttribute('class', 'checked');
 
                     if (turn == 1) {
