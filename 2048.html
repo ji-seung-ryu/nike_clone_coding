@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>2048</title>
+    </head>
+    <body>
+        <style>
+            .block-container {
+                display: flex;
+                flex-direction: row;
+            }
+            .block {
+                height: 100px;
+                width: 100px;
+                border: 1px solid black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .number {
+                font-size: 50px;
+            }
+        </style>
+        <div id="1row" class="block-container">
+            <div id="11" class="block"></div>
+            <div id="12" class="block"></div>
+            <div id="13" class="block"></div>
+            <div id="14" class="block"></div>
+        </div>
+
+        <div id="2row" class="block-container">
+            <div id="21" class="block"></div>
+            <div id="22" class="block"></div>
+            <div id="23" class="block"></div>
+            <div id="24" class="block"></div>
+        </div>
+        <div id="3row" class="block-container">
+            <div id="31" class="block"></div>
+            <div id="32" class="block"></div>
+            <div id="33" class="block"></div>
+            <div id="34" class="block"></div>
+        </div>
+        <div id="4row" class="block-container">
+            <div id="41" class="block"></div>
+            <div id="42" class="block"></div>
+            <div id="43" class="block"></div>
+            <div id="44" class="block"></div>
+        </div>
+
+        <script>
+			
+			var blocks = new Array(5);
+			for (var i=0;i<=4;i++) blocks[i] = new Array(5);
+			for (var i=0;i<=4;i++) for (var j=0;j<=4;j++) blocks[i][j] = 0; 
+			
+            function draw_block(x, y, num) {
+				blocks[x][y] =num;
+				
+                var block = document.getElementById(String(10 * x + y));
+				
+				if (num == 0) block.innerHTML = '';
+                else  block.innerHTML = `<div class= 'number'>${num}<div>`;
+            }
+
+			
+			
+			//빈칸에 숫자 넣을지 말지 반반, 2넣을지 4넣을지 반반
+			function add_numbers(){
+				for (var i= 1;i<=4;i++){
+					for (var j=1;j<=4;j++){
+						
+						if (blocks[i][j]==0){
+							
+							if(Math.floor((Math.random()* 10))% 2) {
+								if(Math.floor((Math.random()* 10))% 2 == 1) {
+									draw_block(i,j,2);
+								} 
+								else{
+									draw_block(i,j,4);
+								}
+							}  
+						}
+					}
+				}
+			}
+			
+			function draw_all_block(){
+				for (var i=1;i<=4;i++){
+					for (var j=1;j<=4;j++){
+						
+						draw_block(i,j,blocks[i][j]);
+					}
+				}
+			}
+			
+			// turn left
+			function rotate (){
+				
+				var rotated_blocks = new Array(5);
+				for (var i=0;i<=4;i++) rotated_blocks[i] = new Array(5);
+				for (var i=0;i<=4;i++) for (var j=0;j<=4;j++) rotated_blocks[i][j] = 0;
+				
+				for (var i=1;i<=4;i++){
+					for (var j=1;j<=4;j++){
+						rotated_blocks[5-j][i] = blocks[i][j];
+					}
+				}
+				return rotated_blocks;
+			}
+			
+			function move(){
+				for (var i=1;i<=4;i++){
+					for (var j=2;j<=4;j++){
+						var prev_merge = 0; 
+						var dist = 0;
+						
+						var val = blocks[i][j];
+						
+						if (val == 0) continue;
+						
+						while (j-dist>1){
+							
+							
+							if (blocks[i][j-dist-1] != 0){
+								if (blocks[i][j-dist-1] == blocks[i][j] && prev_merge == 0){
+									//merge
+									
+									dist += 1;
+									val *= 2; 
+									prev_merge = 1; 
+									
+								}
+								else{
+									prev_merge = 0;
+									
+								}
+								break;
+							}
+							
+							dist ++; 
+						}
+						
+						blocks[i][j] = 0; 
+						blocks[i][j-dist] = val;
+						
+					}
+				}
+			}
+			
+			
+			
+			
+			
+            document.onkeydown = checkKey;
+
+            function checkKey(e) {
+                e = e || window.event;
+
+                if (e.keyCode == '38') {
+                    alert('up');
+					add_numbers();
+					
+                } else if (e.keyCode == '40') {
+                    alert('down');
+                } else if (e.keyCode == '37') {
+                    alert('left');
+					move();
+					draw_all_block();
+                } else if (e.keyCode == '39') {
+                    alert('right');
+                }
+            }
+        </script>
+    </body>
+</html>
