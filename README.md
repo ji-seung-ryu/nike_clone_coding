@@ -1,1 +1,2 @@
-nike clone coding (to practice frontend)
+![image](capture/1.png)
+
