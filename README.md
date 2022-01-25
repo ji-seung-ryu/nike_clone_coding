@@ -1,8 +1,9 @@
 <h3 align="center">favorite brand nike clone coding</h3>
-<br>
+
 <h6 align = 'center'> make typical board and learn responsive web </h6>
 
-<h3 align="center">capture</h3>
+<h3 align="center"> capture </h3>
+
 ![image](capture/1.png)
 <br>
 initial screen
